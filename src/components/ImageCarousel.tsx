@@ -1,20 +1,26 @@
 import { useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 
 import heroImage from "@/assets/hero-buffet.jpg";
 import restaurantImage from "@/assets/restaurant-interior.jpg";
+import restaurantTerrace from "@/assets/restaurant-terrace.jpg";
 import dishSteak from "@/assets/dish-steak.jpg";
-import dishSalad from "@/assets/dish-salad.jpg";
 import dishFeijoada from "@/assets/dish-feijoada.jpg";
 import dishDessert from "@/assets/dish-dessert.jpg";
+import dishRibs from "@/assets/dish-ribs.jpg";
 
 const ImageCarousel = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align: "start",
-  });
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+      align: "start",
+      skipSnaps: false,
+    },
+    [Autoplay({ delay: 4000, stopOnInteraction: false })]
+  );
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -25,47 +31,61 @@ const ImageCarousel = () => {
   }, [emblaApi]);
 
   const images = [
-    { src: heroImage, alt: "Buffet completo" },
-    { src: restaurantImage, alt: "Ambiente do restaurante" },
-    { src: dishSteak, alt: "Carnes grelhadas" },
-    { src: dishSalad, alt: "Saladas frescas" },
-    { src: dishFeijoada, alt: "Feijoada tradicional" },
-    { src: dishDessert, alt: "Sobremesas" },
+    { src: heroImage, alt: "Buffet Completo", subtitle: "Mais de 100 opções diárias" },
+    { src: restaurantImage, alt: "Salão Principal", subtitle: "Ambiente sofisticado" },
+    { src: restaurantTerrace, alt: "Área Externa", subtitle: "Noites especiais ao ar livre" },
+    { src: dishSteak, alt: "Carnes Nobres", subtitle: "Cortes selecionados" },
+    { src: dishFeijoada, alt: "Feijoada Tradicional", subtitle: "Receita de família" },
+    { src: dishRibs, alt: "Costela BBQ", subtitle: "Defumada por 12 horas" },
+    { src: dishDessert, alt: "Sobremesas", subtitle: "Doces artesanais" },
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-cream">
+    <section className="py-24 lg:py-32 bg-background relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-cream to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-cream to-transparent" />
+
       <div className="container mx-auto px-4 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="inline-block px-4 py-2 mb-4 text-sm font-medium text-terracotta bg-terracotta/10 rounded-full">
-            Momentos Especiais
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="inline-block px-6 py-2.5 mb-6 text-sm font-semibold tracking-wider uppercase text-terracotta bg-terracotta/10 rounded-full border border-terracotta/20">
+            🍽️ Momentos Especiais
           </span>
 
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-chocolate mb-6 font-['Playfair_Display']">
-            Nosso <span className="text-wine">Ambiente</span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-chocolate mb-6 font-['Playfair_Display']">
+            Nosso <span className="text-wine italic">Ambiente</span>
           </h2>
         </div>
 
         {/* Carousel */}
-        <div className="relative">
-          <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
-            <div className="flex gap-4">
+        <div className="relative group">
+          <div className="overflow-hidden rounded-3xl shadow-warm" ref={emblaRef}>
+            <div className="flex">
               {images.map((image, index) => (
                 <div
                   key={index}
-                  className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.33%] min-w-0"
+                  className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.33%] min-w-0 pl-4"
                 >
-                  <div className="relative h-80 rounded-xl overflow-hidden mx-2">
+                  <div className="relative h-96 lg:h-[450px] rounded-2xl overflow-hidden group/card">
                     <img
                       src={image.src}
                       alt={image.alt}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-chocolate/40 to-transparent" />
-                    <p className="absolute bottom-4 left-4 text-cream font-medium">
-                      {image.alt}
-                    </p>
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-chocolate/90 via-chocolate/30 to-transparent" />
+                    
+                    {/* Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
+                      <p className="text-gold text-sm font-medium uppercase tracking-wider mb-2">
+                        {image.subtitle}
+                      </p>
+                      <h3 className="text-cream font-bold text-xl lg:text-2xl font-['Playfair_Display']">
+                        {image.alt}
+                      </h3>
+                      <div className="w-12 h-1 bg-terracotta rounded-full mt-3" />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -77,17 +97,17 @@ const ImageCarousel = () => {
             variant="outline"
             size="icon"
             onClick={scrollPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-cream/90 hover:bg-cream border-none shadow-warm z-10"
+            className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-cream/95 hover:bg-cream border-none shadow-warm z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           >
-            <ChevronLeft className="w-5 h-5 text-chocolate" />
+            <ChevronLeft className="w-6 h-6 text-chocolate" />
           </Button>
           <Button
             variant="outline"
             size="icon"
             onClick={scrollNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-cream/90 hover:bg-cream border-none shadow-warm z-10"
+            className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-cream/95 hover:bg-cream border-none shadow-warm z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           >
-            <ChevronRight className="w-5 h-5 text-chocolate" />
+            <ChevronRight className="w-6 h-6 text-chocolate" />
           </Button>
         </div>
       </div>
